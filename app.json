@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Po(S)T - Employee",
+    "name": "Po(S)T",
     "slug": "Post-emp",
     "owner": "softwaretroopers",
-    "version": "Test-1.0.0",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
