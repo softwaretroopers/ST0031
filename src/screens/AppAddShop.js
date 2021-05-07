@@ -6,10 +6,9 @@ import {
   Dimensions,
   StatusBar,
   FlatList,
-  TouchableHighlight,
   TouchableNativeFeedback,
 } from "react-native";
-import { Title, Button, Avatar } from "react-native-paper";
+import { Title, Caption, Avatar } from "react-native-paper";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
@@ -56,12 +55,21 @@ function AppAddShop(props) {
             renderItem={({ item }) => (
               <TouchableNativeFeedback
                 onPress={(values) =>
-                  props.navigation.navigate("AddInvoiceScreen")
+                  props.navigation.navigate("AddInvoiceScreen", {
+                    shop: {
+                      id: item.id,
+                      name: item.name,
+                      category: item.category,
+                    },
+                  })
                 }
               >
                 <View style={styles.card}>
                   <Avatar.Icon size={40} icon="store" />
                   <Title style={styles.title}>{item.name}</Title>
+                  <Caption style={{ textTransform: "uppercase" }}>
+                    මිල කාණ්ඩය: {item.category}
+                  </Caption>
                 </View>
               </TouchableNativeFeedback>
             )}

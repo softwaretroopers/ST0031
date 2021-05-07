@@ -197,6 +197,7 @@ const AddInvoiceScreens = (props) => (
       component={AppAddInvoice}
       options={{
         title: "නව ඉන්වොයිස",
+        headerShown: false,
       }}
     />
     <InvoiceStack.Screen
@@ -204,6 +205,7 @@ const AddInvoiceScreens = (props) => (
       component={AppAddReturn}
       options={{
         title: "Deduct Returns",
+        headerShown: false,
       }}
     />
   </InvoiceStack.Navigator>

@@ -1,104 +1,24 @@
 import React from "react";
-import {
-  View,
-  FlatList,
-  Modal,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import {
   DataTable,
-  IconButton,
   TextInput,
   Title,
   Text,
   ToggleButton,
   Divider,
   Searchbar,
-  Avatar,
-  Chip,
+  Appbar,
 } from "react-native-paper";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 import { firebase } from "../configs/Database";
 
 const totalPrice = 10000;
-const invoiceItems = [
-  {
-    itemID: "#001",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "20",
-  },
-  {
-    itemID: "#002",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "15",
-  },
-  {
-    itemID: "#003",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "10",
-  },
-  {
-    itemID: "#004",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "15",
-  },
-  {
-    itemID: "#005",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "25",
-  },
-  {
-    itemID: "#006",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "20",
-  },
-  {
-    itemID: "#007",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "15",
-  },
-  {
-    itemID: "#008",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "0",
-  },
-  {
-    itemID: "#009",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "15",
-  },
-  {
-    itemID: "#010",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "25",
-  },
-  {
-    itemID: "#011",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "15",
-  },
-  {
-    itemID: "#012",
-    itemName: "Anonymous Item",
-    unitPrice: "250",
-    stock: "25",
-  },
-];
 
-function AppAddInvoice(props) {
+function AppAddInvoice({ navigation, route }) {
+  const { shop } = route.params;
+
   const [StockItems, setStockItems] = React.useState([]);
 
   const stockRef = firebase.firestore().collection("stockItems");
@@ -127,6 +47,22 @@ function AppAddInvoice(props) {
 
   return (
     <View>
+      <Appbar>
+        <Appbar.BackAction onPress={(values) => navigation.goBack()} />
+        <Appbar.Content title="නව ඉන්වොයිස" subtitle={shop.name} />
+        <Appbar.Action
+          onPress={(values) =>
+            navigation.navigate("AddReturnScreen", {
+              shop: {
+                id: shop.id,
+                name: shop.name,
+                category: shop.category,
+              },
+            })
+          }
+          icon="arrow-collapse-right"
+        />
+      </Appbar>
       <View
         style={{
           flexDirection: "row",
@@ -169,13 +105,6 @@ function AppAddInvoice(props) {
           <Title style={{ marginLeft: "5%", fontSize: 12 }}>මුළු මුදල: </Title>
           <Text>Rs.{totalPrice}</Text>
         </View>
-        <Divider style={{ marginLeft: "2%", width: 1, height: "100%" }} />
-        <IconButton
-          onPress={(values) => props.navigation.navigate("AddReturnScreen")}
-          icon="arrow-collapse-right"
-          size={24}
-          color={AppColors.primary}
-        ></IconButton>
       </View>
       <Divider />
       <Searchbar
@@ -194,7 +123,7 @@ function AppAddInvoice(props) {
         <FlatList
           style={{ marginBottom: "53%" }}
           data={StockItems}
-          keyExtractor={(invoiceItem) => invoiceItem.itemID.toString()}
+          keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
           renderItem={({ item }) => (
             <>
               {AppRenderIf(0 == item.stock, <></>)}
@@ -202,7 +131,18 @@ function AppAddInvoice(props) {
                 0 < item.stock,
                 <DataTable.Row>
                   <DataTable.Cell>{item.itemName}</DataTable.Cell>
-                  <DataTable.Cell>{item.unitPriceA}</DataTable.Cell>
+                  {AppRenderIf(
+                    shop.category == "a",
+                    <DataTable.Cell>{item.unitPriceA}</DataTable.Cell>
+                  )}
+                  {AppRenderIf(
+                    shop.category == "b",
+                    <DataTable.Cell>{item.unitPriceB}</DataTable.Cell>
+                  )}
+                  {AppRenderIf(
+                    shop.category == "c",
+                    <DataTable.Cell>{item.unitPriceC}</DataTable.Cell>
+                  )}
                   <DataTable.Cell>
                     <TextInput
                       placeholder={item.stock}
