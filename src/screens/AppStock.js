@@ -87,27 +87,15 @@ function AppStock(props) {
                         marginVertical: "5%",
                       }}
                     >
-                      {AppRenderIf(
-                        10 < item.stock,
-                        <Chip style={{ marginRight: "3%" }}>
-                          <Caption style={{ fontSize: 8 }}>තොගය: </Caption>
-                          {item.stock}
-                        </Chip>
-                      )}
-                      {AppRenderIf(
-                        10 >= item.stock,
-                        <Chip
-                          selectedColor={AppColors.orange}
-                          style={{ marginRight: "3%" }}
-                        >
-                          <Caption
-                            style={{ fontSize: 8, color: AppColors.orange }}
-                          >
-                            තොගය:{" "}
-                          </Caption>
-                          {item.stock} (Low)
-                        </Chip>
-                      )}
+                      <Chip
+                        selectedColor={AppColors.red}
+                        style={{ marginRight: "3%" }}
+                      >
+                        <Caption style={{ fontSize: 8, color: AppColors.red }}>
+                          තොගය:{" "}
+                        </Caption>
+                        {item.stock}
+                      </Chip>
                       <Chip>
                         <Caption style={{ fontSize: 8 }}>තොග මිල </Caption>Rs.
                         {item.stockPrice}
@@ -135,6 +123,7 @@ function AppStock(props) {
                   </View>
                 </View>
               )}
+
               {AppRenderIf(
                 item.stock > 0,
                 <View
@@ -175,6 +164,15 @@ function AppStock(props) {
                         icon="check-circle"
                         color={AppColors.secondaryVariant}
                       />
+                      {AppRenderIf(
+                        10 >= item.stock,
+                        <Avatar.Icon
+                          style={{ backgroundColor: AppColors.background }}
+                          size={40}
+                          icon="arrow-down-circle"
+                          color={AppColors.orange}
+                        />
+                      )}
                     </View>
                     <View
                       style={{
