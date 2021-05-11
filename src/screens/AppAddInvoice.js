@@ -1,6 +1,7 @@
 import React from "react";
-import { View, FlatList, StyleSheet, TouchableNativeFeedback } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
 import {
+  Button,
   DataTable,
   TextInput,
   Title,
@@ -9,6 +10,7 @@ import {
   Divider,
   Searchbar,
   Appbar,
+  Caption,
 } from "react-native-paper";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
@@ -17,7 +19,7 @@ import { firebase } from "../configs/Database";
 const totalPrice = 10000;
 
 function AppAddInvoice({ navigation, route }) {
-  const { shop } = route.params;
+  const { invoice } = route.params;
 
   const [StockItems, setStockItems] = React.useState([]);
 
@@ -41,24 +43,48 @@ function AppAddInvoice({ navigation, route }) {
   }, []);
 
   const [value, setValue] = React.useState("cash");
-  const [tot, settot] = React.useState("0");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
+  const [itemName, setItemName] = React.useState("");
+  const [unitPrice, setunitPrice] = React.useState("");
+  const [stockPrice, setStockPrice] = React.useState("");
   const onChangeSearch = (query) => setSearchQuery(query);
+  //const quantitya = React.useState([]);
+
+  const invoiceRef = firebase.firestore().collection("invoices").doc(invoice.docID).collection("invItem");
+
+  const createInvoice = () => { {
+//      const timestamp = firebase.firestore.FieldValue.serverTimestamp(); 
+  //    const invoiceid = Date.now();
+      const data = {
+        itemName: itemName,
+        quantity:quantity,
+        stockPrice:stockPrice,  
+        unitPrice:unitPrice,
+      };
+      invoiceRef
+        .add(data)
+        .then((_doc) => {
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
+
 
   return (
     <View>
       <Appbar>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="නව ඉන්වොයිස" subtitle={shop.name} />
+        <Appbar.Content title="නව ඉන්වොයිස" subtitle={invoice.name} />
         <Appbar.Action
           onPress={(values) =>
-            onPressInvoice(),
             navigation.navigate("AddReturnScreen", {
                shop: {
-                id: shop.id,
-               name: shop.name,
-                category: shop.category,
+               name: invoice.name,
+               payMethod:value,
+               docID:invoice.docID
                },
             })
           }
@@ -82,7 +108,7 @@ function AppAddInvoice({ navigation, route }) {
           }}
         >
           <Title style={{ marginHorizontal: "2%", fontSize: 12 }}>
-            ගෙවීමේ ක්‍රමය
+            ගෙවීමේ ක්‍රමය 
           </Title>
           <ToggleButton.Row
             onValueChange={(value) => setValue(value)}
@@ -104,8 +130,6 @@ function AppAddInvoice({ navigation, route }) {
             justifyContent: "center",
           }}
         >
-          <Title style={{ marginLeft: "5%", fontSize: 12 }}>මුළු මුදල: </Title>
-          <Text>Rs.{totalPrice}</Text>
         </View>
       </View>
       <Divider />
@@ -115,62 +139,47 @@ function AppAddInvoice({ navigation, route }) {
         value={searchQuery}
       />
       <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>භාණ්ඩ</DataTable.Title>
-          <DataTable.Title>ඒකක මිල (Rs)</DataTable.Title>
-          <DataTable.Title>ප්‍රමාණය</DataTable.Title>
-          <DataTable.Title>මිල (Rs)</DataTable.Title>
-        </DataTable.Header>
 
         <FlatList
           style={{ marginBottom: "53%" }}
           data={StockItems}
           keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
-          renderItem={({ item }) => (
-          
-            // <TouchableNativeFeedback
-            //     const onPressInvoice ={
-            //         invoiceItem {
-            //          id: item.id,
-            //           itemName: item.itemName,
-            //           quantity: item.quantity,
-            //           unitPrice:item.unitPrice,
-            //         //  total:item.subtot,
-            //         }
-            //       }
-            //   >
-              
+          renderItem={({ item,index }) => (
+                  
+            
             <>
-              {AppRenderIf(0 == item.stock, <></>)}
               {AppRenderIf(
                 0 < item.stock,
-                <DataTable.Row
-                // onValueChange={(tot) => settot(tot)}
-                // value={tot}
-                >
-                  <DataTable.Cell>{item.itemName}</DataTable.Cell>
+                <>
+                <DataTable.Row>
+                <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell>
+                </DataTable.Row>
+                
+                <DataTable.Row>
+                  {/* <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell> */}
                   {AppRenderIf(
-                    shop.category == "a",
-                    <DataTable.Cell>{item.unitPriceA}</DataTable.Cell>
+                    invoice.category == "a",
+                    <DataTable.Cell style={{justifyContent:"center"}}>
+                      ඒකක මිල: Rs.
+                    {item.unitPriceA}</DataTable.Cell>
                   )}
                   {AppRenderIf(
-                    shop.category == "b",
-                    <DataTable.Cell>{item.unitPriceB}</DataTable.Cell>
+                    invoice.category == "b",
+                    <DataTable.Cell style={{justifyContent:"center"}}>{item.unitPriceB}</DataTable.Cell>
                   )}
                   {AppRenderIf(
-                    shop.category == "c",
-                    <DataTable.Cell>{item.unitPriceC}</DataTable.Cell>
+                    invoice.category == "c",
+                    <DataTable.Cell style={{justifyContent:"center"}}>{item.unitPriceC}</DataTable.Cell>
                   )}
-                  {AppRenderIf(
-                    (quantity && entityText.length > 0)
-                  )}
-             
-                      <DataTable.Cell>
-                    <TextInput
-                      placeholder={item.stock}
+                    <DataTable.Cell style={{justifyContent:"center",alignItems:"center"}}>
+                      
+                     <TextInput
+                      placeholder={'ප්‍රමාණය: '+item.stock}
                       mode="outlined"
-                      onChangeText={(text) => setQuantity(text)}
-                      value={quantity}
+                      onChangeText={(text) => {setQuantity(text),
+                      setItemName(item.itemName),setunitPrice(item.unitPriceA),setStockPrice(item.stockPrice)}
+                      }
+                      
                       keyboardType="number-pad"
                       style={{
                         backgroundColor: AppColors.background,
@@ -178,14 +187,21 @@ function AppAddInvoice({ navigation, route }) {
                       }}
                       >
                       </TextInput>
+                      </DataTable.Cell>    
+                      <DataTable.Cell style={{justifyContent:"center"}}>
+                      <Button
+                      mode='contained'
+                        icon="plus-circle"
+                       // color={Colors.red500}
+                        size={20}
+                        onPress={() => createInvoice()}
+                          >Add</Button>
                       </DataTable.Cell>
-               
-                  <DataTable.Cell>{item.unitPriceA * quantity}</DataTable.Cell>
-               
-                </DataTable.Row>
+                     </DataTable.Row>
+                     </>
               )}
             </>
-            </TouchableNativeFeedback> 
+          
           )}
         />
       </DataTable>

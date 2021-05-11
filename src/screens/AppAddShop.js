@@ -15,6 +15,7 @@ import AppColors from "../configs/AppColors";
 
 function AppAddShop(props) {
   const [shops, setShops] = useState([]);
+  const invoiceId = Date.now().toString();
 
   const shopRef = firebase.firestore().collection("shops");
 
@@ -34,6 +35,24 @@ function AppAddShop(props) {
       }
     );
   }, []);
+
+  //create invoice
+  const dbRef = firebase.firestore();
+
+  const createInvoice = () => { {
+      
+      const data = {
+        invoiceID:invoiceId
+      };
+      dbRef.collection("invoices").doc(invoiceId)
+        .set(data)
+        .catch((error) => {
+          alert(error);
+        });
+    }
+  };
+
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={AppColors.primary} barStyle="light-content" />
@@ -55,13 +74,14 @@ function AppAddShop(props) {
             renderItem={({ item }) => (
               <TouchableNativeFeedback
                 onPress={(values) =>
-                  props.navigation.navigate("AddInvoiceScreen", {
-                    shop: {
-                     id: item.id,
+                  {createInvoice(),props.navigation.navigate("AddInvoiceScreen", {
+                    invoice: {
                       name: item.name,
                       category: item.category,
+                      docID:invoiceId,
                     },
-                  })
+                  })}
+                  
                 }
               >
                 <View style={styles.card}>

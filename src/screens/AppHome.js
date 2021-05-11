@@ -102,7 +102,7 @@ function AppHome(props) {
                       justifyContent: "space-between",
                     }}
                   >
-                    <Caption style={styles.caption}>12/04/2021</Caption>
+                    <Caption style={styles.caption}>11/11/1111</Caption>
                   </View>
                 </View>
               </View>

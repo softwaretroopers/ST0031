@@ -19,7 +19,7 @@ function AppLogin(props) {
   const onLoginPress = () => {
     firebase
       .auth()
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email.toLowerCase(), password)
       .then((response) => {
         const uid = response.user.uid;
         const usersRef = firebase.firestore().collection("users");

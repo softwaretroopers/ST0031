@@ -16,34 +16,29 @@ import { firebase } from "../configs/Database";
 const totalPrice = 10000;
 
 function AppAddReturns({ navigation, route }) {
+
   const { shop } = route.params;
-//  const { invoiceItem } = route.params;
+  const [returns, setReturns] = React.useState('0');
 
-  const [StockItems, setStockItems] = React.useState([]);
+  const dbRef = firebase.firestore();
 
-  const stockRef = firebase.firestore().collection("stockItems");
-  const [quantity, setQuantity] = React.useState("");
-  const [unitPrice, setUnitPrice] = React.useState("");
-
-  React.useEffect(() => {
-    stockRef.onSnapshot(
-      (querySnapshot) => {
-        const newStock = [];
-        querySnapshot.forEach((doc) => {
-          const shop = doc.data();
-          shop.id = doc.id;
-          newStock.push(shop);
-        });
-        setStockItems(newStock);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }, []);
-
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const addReturns = () => { {
+    
+  const timestamp = firebase.firestore.FieldValue.serverTimestamp(); 
+  const data = {
+    payMethod:shop.payMethod,
+    shopName:shop.name,
+    returns:returns,
+    invoiceID:shop.docID,
+    date:timestamp
+  };
+    dbRef.collection("invoices").doc(shop.docID)
+    .set(data)
+    .catch((error) => {
+      alert(error);
+    });
+    }
+  };
 
   return (
     <View>
@@ -51,7 +46,7 @@ function AppAddReturns({ navigation, route }) {
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
         <Appbar.Content title="Deduct Returns" subtitle={shop.name} />
         <Appbar.Action
-          onPress={(values) => navigation.navigate("HomeScreen")}
+          onPress={(values) => {addReturns(),navigation.navigate("HomeScreen")}}
           icon="arrow-collapse-right"
         />
       </Appbar>
@@ -85,59 +80,20 @@ function AppAddReturns({ navigation, route }) {
           <Title style={{ marginLeft: "5%", fontSize: 12 }}>
             නව මුළු මුදල:
           </Title>
-          <Text>Rs.{totalPrice}</Text>
+          <Text>Rs.{totalPrice-returns}</Text>
         </View>
+       
       </View>
-      <Divider />
-      <Searchbar
-        placeholder="භාණ්ඩ සොයන්න"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
-      />
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>භාණ්ඩ</DataTable.Title>
-          <DataTable.Title>ඒකක මිල</DataTable.Title>
-          <DataTable.Title>ප්‍රමාණය</DataTable.Title>
-          <DataTable.Title>මිල</DataTable.Title>
-        </DataTable.Header>
-
-        <FlatList
-          style={{ marginBottom: "53%" }}
-          data={StockItems}
-          keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
-          renderItem={({ item }) => (
-            <DataTable.Row>
-              <DataTable.Cell>{item.itemName}</DataTable.Cell>
-              <DataTable.Cell>
-                <TextInput
-                  placeholder="Rs."
-                  mode="outlined"
-                  keyboardType="number-pad"
-                  onChangeText={(text) => setUnitPrice(text)}
-                  style={{
-                    backgroundColor: AppColors.background,
-                    height: 25,
-                  }}
-                ></TextInput>
-              </DataTable.Cell>
-              <DataTable.Cell>
-                <TextInput
-                  placeholder={item.stock}
-                  mode="outlined"
-                  keyboardType="number-pad"
-                  onChangeText={(text) => setQuantity(text)}
-                  style={{
-                    backgroundColor: AppColors.background,
-                    height: 25,
-                  }}
-                ></TextInput>
-              </DataTable.Cell>
-              <DataTable.Cell>{unitPrice * quantity}</DataTable.Cell>
-            </DataTable.Row>
-          )}
-        />
-      </DataTable>
+      <Divider/>   
+      <TextInput
+        placeholder='Returns (Rs)'
+        mode="outlined"
+       onChangeText={(text) => setReturns(text)}
+        value={returns}
+       keyboardType="number-pad"
+        style={{width:'60%',alignSelf:"center"}}
+        >
+      </TextInput>
     </View>
   );
 }
