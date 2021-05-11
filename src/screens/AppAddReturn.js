@@ -17,6 +17,7 @@ const totalPrice = 10000;
 
 function AppAddReturns({ navigation, route }) {
   const { shop } = route.params;
+//  const { invoiceItem } = route.params;
 
   const [StockItems, setStockItems] = React.useState([]);
 

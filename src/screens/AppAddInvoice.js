@@ -1,5 +1,5 @@
 import React from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, TouchableNativeFeedback } from "react-native";
 import {
   DataTable,
   TextInput,
@@ -41,6 +41,7 @@ function AppAddInvoice({ navigation, route }) {
   }, []);
 
   const [value, setValue] = React.useState("cash");
+  const [tot, settot] = React.useState("0");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [quantity, setQuantity] = React.useState("");
   const onChangeSearch = (query) => setSearchQuery(query);
@@ -52,12 +53,13 @@ function AppAddInvoice({ navigation, route }) {
         <Appbar.Content title="නව ඉන්වොයිස" subtitle={shop.name} />
         <Appbar.Action
           onPress={(values) =>
+            onPressInvoice(),
             navigation.navigate("AddReturnScreen", {
-              shop: {
+               shop: {
                 id: shop.id,
-                name: shop.name,
+               name: shop.name,
                 category: shop.category,
-              },
+               },
             })
           }
           icon="arrow-collapse-right"
@@ -125,11 +127,27 @@ function AppAddInvoice({ navigation, route }) {
           data={StockItems}
           keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
           renderItem={({ item }) => (
+          
+            // <TouchableNativeFeedback
+            //     const onPressInvoice ={
+            //         invoiceItem {
+            //          id: item.id,
+            //           itemName: item.itemName,
+            //           quantity: item.quantity,
+            //           unitPrice:item.unitPrice,
+            //         //  total:item.subtot,
+            //         }
+            //       }
+            //   >
+              
             <>
               {AppRenderIf(0 == item.stock, <></>)}
               {AppRenderIf(
                 0 < item.stock,
-                <DataTable.Row>
+                <DataTable.Row
+                // onValueChange={(tot) => settot(tot)}
+                // value={tot}
+                >
                   <DataTable.Cell>{item.itemName}</DataTable.Cell>
                   {AppRenderIf(
                     shop.category == "a",
@@ -143,22 +161,31 @@ function AppAddInvoice({ navigation, route }) {
                     shop.category == "c",
                     <DataTable.Cell>{item.unitPriceC}</DataTable.Cell>
                   )}
-                  <DataTable.Cell>
+                  {AppRenderIf(
+                    (quantity && entityText.length > 0)
+                  )}
+             
+                      <DataTable.Cell>
                     <TextInput
                       placeholder={item.stock}
                       mode="outlined"
                       onChangeText={(text) => setQuantity(text)}
+                      value={quantity}
                       keyboardType="number-pad"
                       style={{
                         backgroundColor: AppColors.background,
                         height: 25,
                       }}
-                    ></TextInput>
-                  </DataTable.Cell>
+                      >
+                      </TextInput>
+                      </DataTable.Cell>
+               
                   <DataTable.Cell>{item.unitPriceA * quantity}</DataTable.Cell>
+               
                 </DataTable.Row>
               )}
             </>
+            </TouchableNativeFeedback> 
           )}
         />
       </DataTable>

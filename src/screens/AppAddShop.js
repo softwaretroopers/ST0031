@@ -57,7 +57,7 @@ function AppAddShop(props) {
                 onPress={(values) =>
                   props.navigation.navigate("AddInvoiceScreen", {
                     shop: {
-                      id: item.id,
+                     id: item.id,
                       name: item.name,
                       category: item.category,
                     },
