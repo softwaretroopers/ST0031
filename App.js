@@ -14,9 +14,10 @@ import AppHome from "./src/screens/AppHome";
 import AppStock from "./src/screens/AppStock";
 import AppShop from "./src/screens/AppShop";
 import AppProfile from "./src/screens/AppProfile";
-import AppAddShop from "./src/screens/AppAddShop";
+import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
 import AppAddReturn from "./src/screens/AppAddReturn";
+import AppInvoice from "./src/screens/AppInvoice";
 
 const MainStack = createStackNavigator();
 const HomeStack = createStackNavigator();
@@ -96,6 +97,14 @@ const HomeNav = () => (
       name="TabNav"
       component={TabNav}
       options={{ headerShown: false }}
+    />
+    <HomeStack.Screen
+      name="AppInvoice"
+      component={AppInvoice}
+      options={{
+        title: "Invoice Details",
+        headerShown: false,
+      }}
     />
     <HomeStack.Screen
       name="AddInvoiceScreens"
@@ -187,7 +196,7 @@ const AddInvoiceScreens = (props) => (
   >
     <InvoiceStack.Screen
       name="AddShopScreen"
-      component={AppAddShop}
+      component={AppSelectShop}
       options={{
         title: "සාප්පුවක් තෝරන්න",
       }}
