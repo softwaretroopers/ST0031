@@ -175,7 +175,8 @@ function AppInvoice({ route, navigation }) {
             marginEnd: "3.5%",
           }}
         >
-          ආපසු භාරගැනීම් අඩු කල පසු මුළු මුදල: Rs.{invoice.returns}
+          ආපසු භාරගැනීම් අඩු කල පසු මුළු මුදල: Rs.
+          {invoice.total - invoice.returns}
         </Title>
       </View>
     </ScrollView>
