@@ -70,6 +70,7 @@ function AppHome(props) {
                     returns: item.returns,
                     shopName: item.shopName,
                     date: item.date,
+                    total: item.total,
                   },
                 });
               }}

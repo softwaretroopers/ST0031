@@ -12,7 +12,6 @@ import { firebase } from "../configs/Database";
 
 function AppInvoice({ route, navigation }) {
   const { invoice } = route.params;
-  let totalPrice = "";
 
   const [InvoiceItem, setInvoiceItems] = React.useState([]);
 
@@ -32,6 +31,31 @@ function AppInvoice({ route, navigation }) {
           newInvoiceItem.push(invoiceItem);
         });
         setInvoiceItems(newInvoiceItem);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }, []);
+
+  const [ReturnItems, setReturnItems] = React.useState([]);
+
+  const returnItemsRef = firebase
+    .firestore()
+    .collection("invoices")
+    .doc(invoice.docID)
+    .collection("returnItems");
+
+  React.useEffect(() => {
+    returnItemsRef.onSnapshot(
+      (querySnapshot) => {
+        const newReturnItems = [];
+        querySnapshot.forEach((doc) => {
+          const returnItems = doc.data();
+          returnItems.id = doc.id;
+          newReturnItems.push(returnItems);
+        });
+        setReturnItems(newReturnItems);
       },
       (error) => {
         console.log(error);
@@ -92,15 +116,6 @@ function AppInvoice({ route, navigation }) {
             )}
           />
         </DataTable>
-        <Caption
-          style={{
-            fontSize: 16,
-            alignSelf: "flex-end",
-            marginEnd: "3.5%",
-          }}
-        >
-          Returns: Rs.{invoice.returns}
-        </Caption>
         <Title
           style={{
             fontWeight: "bold",
@@ -109,10 +124,47 @@ function AppInvoice({ route, navigation }) {
             marginEnd: "3.5%",
           }}
         >
-          {InvoiceItem.forEach((item) => {
-            totalPrice += item.unitPrice * item.quantity;
-          })}
-          මුළු මුදල : {totalPrice}
+          මුළු මුදල : Rs.{invoice.total}
+        </Title>
+        <Divider />
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Cell style={{ justifyContent: "center" }}>
+              ආපසු එවීම්
+            </DataTable.Cell>
+          </DataTable.Header>
+        </DataTable>
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>භාණ්ඩ</DataTable.Title>
+            <DataTable.Title numeric>ඒකක මිල</DataTable.Title>
+            <DataTable.Title numeric>ප්‍රමාණය</DataTable.Title>
+            <DataTable.Title numeric>මිල</DataTable.Title>
+          </DataTable.Header>
+          <FlatList
+            data={ReturnItems}
+            keyExtractor={(invoice) => invoice.id}
+            renderItem={({ item }) => (
+              <DataTable.Row>
+                <DataTable.Cell>{item.itemName}</DataTable.Cell>
+                <DataTable.Cell numeric>Rs.{item.unitPrice}</DataTable.Cell>
+                <DataTable.Cell numeric>{item.quantity}</DataTable.Cell>
+                <DataTable.Cell numeric>
+                  Rs.{item.unitPrice * item.quantity}
+                </DataTable.Cell>
+              </DataTable.Row>
+            )}
+          />
+        </DataTable>
+        <Title
+          style={{
+            fontWeight: "bold",
+            fontSize: 16,
+            alignSelf: "flex-end",
+            marginEnd: "3.5%",
+          }}
+        >
+          මුළු ආපසු එවීම්: Rs.{invoice.returns}
         </Title>
       </View>
     </ScrollView>

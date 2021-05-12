@@ -45,14 +45,32 @@ function AppAddInvoice({ navigation, route }) {
     );
   }, []);
 
+  // const updateStock = () => {
+  //   if (entityText && entityText.length > 0 && value && value.length > 0) {
+  //     const data = {
+  //       name: entityText,
+  //       category: value,
+  //     };
+  //     stockRef
+  //       .set(data)
+  //       .then((_doc) => {
+  //         setEntityText("");
+  //         navigation.goBack();
+  //       })
+  //       .catch((error) => {
+  //         alert(error);
+  //       });
+  //   }
+  // };
+
   const [value, setValue] = React.useState("cash");
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [quantity, setQuantity] = React.useState("");
+
+  const [quantity, setQuantity] = React.useState(0);
   const [itemName, setItemName] = React.useState("");
-  const [unitPrice, setunitPrice] = React.useState("");
-  const [stockPrice, setStockPrice] = React.useState("");
+  const [unitPrice, setunitPrice] = React.useState(0);
+  const [stockPrice, setStockPrice] = React.useState(0);
   const onChangeSearch = (query) => setSearchQuery(query);
-  //const quantitya = React.useState([]);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const invoiceRef = firebase
     .firestore()
@@ -66,9 +84,9 @@ function AppAddInvoice({ navigation, route }) {
       //    const invoiceid = Date.now();
       const data = {
         itemName: itemName,
-        quantity: quantity,
-        stockPrice: stockPrice,
-        unitPrice: unitPrice,
+        quantity: parseInt(quantity),
+        stockPrice: parseFloat(stockPrice),
+        unitPrice: parseFloat(unitPrice),
       };
       invoiceRef
         .add(data)
