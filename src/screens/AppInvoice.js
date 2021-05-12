@@ -130,7 +130,7 @@ function AppInvoice({ route, navigation }) {
         <DataTable>
           <DataTable.Header>
             <DataTable.Cell style={{ justifyContent: "center" }}>
-              ආපසු එවීම්
+              ආපසු භාරගැනීම්
             </DataTable.Cell>
           </DataTable.Header>
         </DataTable>
@@ -164,7 +164,18 @@ function AppInvoice({ route, navigation }) {
             marginEnd: "3.5%",
           }}
         >
-          මුළු ආපසු එවීම්: Rs.{invoice.returns}
+          මුළු ආපසු භාරගැනීම්: Rs.{invoice.returns}
+        </Title>
+        <Divider />
+        <Title
+          style={{
+            fontWeight: "bold",
+            fontSize: 16,
+            alignSelf: "flex-end",
+            marginEnd: "3.5%",
+          }}
+        >
+          ආපසු භාරගැනීම් අඩු කල පසු මුළු මුදල: Rs.{invoice.returns}
         </Title>
       </View>
     </ScrollView>

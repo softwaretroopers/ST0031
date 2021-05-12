@@ -171,7 +171,7 @@ function AppAddReturns({ navigation, route }) {
     <View>
       <Appbar>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="Deduct Returns" subtitle={shop.name} />
+        <Appbar.Content title="ආපසු භාරගැනීම්" subtitle={shop.name} />
         <Appbar.Action
           onPress={(values) => {
             onToggleSnackBar();
@@ -210,9 +210,9 @@ function AppAddReturns({ navigation, route }) {
           }}
         >
           <Title style={{ marginLeft: "5%", fontSize: 12 }}>
-            නව මුළු මුදල:
+            ආපසු භාරගැනීම්:
           </Title>
-          {/* <Text>Rs.{totalPrice - returns}</Text> */}
+          <Text> Rs.{totalReturns}</Text>
         </View>
         <Snackbar
           duration={500}

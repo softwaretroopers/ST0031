@@ -45,27 +45,34 @@ function AppAddInvoice({ navigation, route }) {
     );
   }, []);
 
-  // const updateStock = () => {
-  //   if (entityText && entityText.length > 0 && value && value.length > 0) {
-  //     const data = {
-  //       name: entityText,
-  //       category: value,
-  //     };
-  //     stockRef
-  //       .set(data)
-  //       .then((_doc) => {
-  //         setEntityText("");
-  //         navigation.goBack();
-  //       })
-  //       .catch((error) => {
-  //         alert(error);
-  //       });
-  //   }
-  // };
+  const updateStock = () => {
+    const data = {
+      stock: itemStock - quantity,
+      itemName: itemName,
+      unitPriceA: unitPriceA,
+      unitPriceB: unitPriceB,
+      unitPriceC: unitPriceC,
+      stockPrice: stockPrice,
+    };
+    stockRef
+      .doc(itemID)
+      .set(data)
+      .then((_doc) => {
+        navigation.goBack();
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
 
   const [value, setValue] = React.useState("cash");
 
   const [quantity, setQuantity] = React.useState(0);
+  const [itemID, setItemID] = React.useState("");
+  const [itemStock, setItemStock] = React.useState("");
+  const [unitPriceA, setUnitPriceA] = React.useState(0);
+  const [unitPriceB, setUnitPriceB] = React.useState(0);
+  const [unitPriceC, setUnitPriceC] = React.useState(0);
   const [itemName, setItemName] = React.useState("");
   const [unitPrice, setunitPrice] = React.useState(0);
   const [stockPrice, setStockPrice] = React.useState(0);
@@ -208,21 +215,75 @@ function AppAddInvoice({ navigation, route }) {
                     <DataTable.Cell
                       style={{ justifyContent: "center", alignItems: "center" }}
                     >
-                      <TextInput
-                        placeholder={"ප්‍රමාණය: " + item.stock}
-                        mode="outlined"
-                        onChangeText={(text) => {
-                          setQuantity(text),
-                            setItemName(item.itemName),
-                            setunitPrice(item.unitPriceA),
-                            setStockPrice(item.stockPrice);
-                        }}
-                        keyboardType="number-pad"
-                        style={{
-                          backgroundColor: AppColors.background,
-                          height: 25,
-                        }}
-                      ></TextInput>
+                      {AppRenderIf(
+                        invoice.category == "a",
+                        <TextInput
+                          placeholder={"ප්‍රමාණය: " + item.stock}
+                          mode="outlined"
+                          onChangeText={(text) => {
+                            setQuantity(text),
+                              setItemName(item.itemName),
+                              setunitPrice(item.unitPriceA),
+                              setStockPrice(item.stockPrice),
+                              setItemID(item.id),
+                              setItemStock(item.stock),
+                              setUnitPriceA(item.unitPriceA),
+                              setUnitPriceB(item.unitPriceB),
+                              setUnitPriceC(item.unitPriceC);
+                          }}
+                          keyboardType="number-pad"
+                          style={{
+                            backgroundColor: AppColors.background,
+                            height: 25,
+                          }}
+                        ></TextInput>
+                      )}
+                      {AppRenderIf(
+                        invoice.category == "b",
+                        <TextInput
+                          placeholder={"ප්‍රමාණය: " + item.stock}
+                          mode="outlined"
+                          onChangeText={(text) => {
+                            setQuantity(text),
+                              setItemName(item.itemName),
+                              setunitPrice(item.unitPriceB),
+                              setStockPrice(item.stockPrice),
+                              setItemID(item.id),
+                              setItemStock(item.stock),
+                              setUnitPriceA(item.unitPriceA),
+                              setUnitPriceB(item.unitPriceB),
+                              setUnitPriceC(item.unitPriceC);
+                          }}
+                          keyboardType="number-pad"
+                          style={{
+                            backgroundColor: AppColors.background,
+                            height: 25,
+                          }}
+                        ></TextInput>
+                      )}
+                      {AppRenderIf(
+                        invoice.category == "c",
+                        <TextInput
+                          placeholder={"ප්‍රමාණය: " + item.stock}
+                          mode="outlined"
+                          onChangeText={(text) => {
+                            setQuantity(text),
+                              setItemName(item.itemName),
+                              setunitPrice(item.unitPriceC),
+                              setStockPrice(item.stockPrice),
+                              setItemID(item.id),
+                              setItemStock(item.stock),
+                              setUnitPriceA(item.unitPriceA),
+                              setUnitPriceB(item.unitPriceB),
+                              setUnitPriceC(item.unitPriceC);
+                          }}
+                          keyboardType="number-pad"
+                          style={{
+                            backgroundColor: AppColors.background,
+                            height: 25,
+                          }}
+                        ></TextInput>
+                      )}
                     </DataTable.Cell>
                     <DataTable.Cell style={{ justifyContent: "center" }}>
                       <Button
@@ -233,6 +294,7 @@ function AppAddInvoice({ navigation, route }) {
                         onPress={() => {
                           createInvoice();
                           onToggleSnackBar();
+                          updateStock();
                         }}
                       >
                         Add
