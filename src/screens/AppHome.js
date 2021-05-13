@@ -4,7 +4,6 @@ import {
   FlatList,
   StyleSheet,
   StatusBar,
-  ScrollView,
   TouchableNativeFeedback,
 } from "react-native";
 import {
@@ -61,52 +60,57 @@ function AppHome(props) {
           data={Invoices}
           keyExtractor={(invoice) => invoice.id}
           renderItem={({ item }) => (
-            <TouchableNativeFeedback
-              onPress={(values) => {
-                props.navigation.navigate("AppInvoice", {
-                  invoice: {
-                    docID: item.invoiceID,
-                    payMethod: item.payMethod,
-                    returns: item.returns,
-                    shopName: item.shopName,
-                    date: item.date,
-                    total: item.total,
-                  },
-                });
-              }}
-            >
-              <View style={styles.invoiceInfoSection}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-evenly",
+            <>
+              {AppRenderIf(
+                null != item.shopName,
+                <TouchableNativeFeedback
+                  onPress={(values) => {
+                    props.navigation.navigate("AppInvoice", {
+                      invoice: {
+                        docID: item.invoiceID,
+                        payMethod: item.payMethod,
+                        returns: item.returns,
+                        shopName: item.shopName,
+                        date: item.date,
+                        total: item.total,
+                      },
+                    });
                   }}
                 >
-                  <View
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Avatar.Icon size={40} icon="file-document" />
-                    <Title style={{ fontSize: 12 }}>{item.invoiceID}</Title>
-                  </View>
-
-                  <View style={{ flexDirection: "column" }}>
-                    <Title style={styles.title}>{item.shopName}</Title>
+                  <View style={styles.invoiceInfoSection}>
                     <View
                       style={{
                         flexDirection: "row",
-                        justifyContent: "space-between",
+                        alignItems: "center",
+                        justifyContent: "space-evenly",
                       }}
                     >
-                      <Caption style={styles.caption}>{item.date}</Caption>
+                      <View
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Avatar.Icon size={40} icon="file-document" />
+                        <Title style={{ fontSize: 12 }}>{item.invoiceID}</Title>
+                      </View>
+
+                      <View style={{ flexDirection: "column" }}>
+                        <Title style={styles.title}>{item.shopName}</Title>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Caption style={styles.caption}>{item.date}</Caption>
+                        </View>
+                      </View>
                     </View>
                   </View>
-                </View>
-              </View>
-            </TouchableNativeFeedback>
+                </TouchableNativeFeedback>
+              )}
+            </>
           )}
         />
         <Portal>
