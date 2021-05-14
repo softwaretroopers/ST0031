@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from "react-native";
 import {
   Button,
@@ -58,7 +58,7 @@ function AppAddInvoice({ navigation, route }) {
       .doc(itemID)
       .set(data)
       .then((_doc) => {
-        navigation.goBack();
+        //navigation.goBack();
       })
       .catch((error) => {
         alert(error);
@@ -101,6 +101,53 @@ function AppAddInvoice({ navigation, route }) {
         .catch((error) => {
           alert(error);
         });
+    }
+  };
+
+  //search
+  const stockInvoiceRef = firebase.firestore().collection("stockItems");
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  React.useEffect(() => {
+    stockInvoiceRef.onSnapshot(
+        (querySnapshot) => {
+          const newStock = [];
+          querySnapshot.forEach((doc) => {
+            const shop = doc.data();
+            shop.id = doc.id;
+            newStock.push(shop);
+          });
+          setFilteredDataSource(newStock),
+          setMasterDataSource(newStock);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }, []);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.itemName
+          ? item.itemName.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
     }
   };
 
@@ -171,14 +218,15 @@ function AppAddInvoice({ navigation, route }) {
       </View>
       <Divider />
       <Searchbar
+        onChangeText={(text) => searchFilterFunction(text)}
+        onClear={(text) => searchFilterFunction('')}
         placeholder="භාණ්ඩ සොයන්න"
-        onChangeText={onChangeSearch}
-        value={searchQuery}
+        value={search}
       />
       <DataTable>
         <FlatList
           style={{ marginBottom: "53%" }}
-          data={StockItems}
+          data={filteredDataSource}
           keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
           renderItem={({ item, index }) => (
             <>
@@ -203,12 +251,14 @@ function AppAddInvoice({ navigation, route }) {
                     {AppRenderIf(
                       invoice.category == "b",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
+                        ඒකක මිල: Rs.
                         {item.unitPriceB}
                       </DataTable.Cell>
                     )}
                     {AppRenderIf(
                       invoice.category == "c",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
+                        ඒකක මිල: Rs.
                         {item.unitPriceC}
                       </DataTable.Cell>
                     )}

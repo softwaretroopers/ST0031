@@ -14,6 +14,7 @@ import {
   Avatar,
   Provider,
   Dialog,
+  Searchbar,
   Portal,
   Paragraph,
   Button,
@@ -68,6 +69,53 @@ function AppSelectShop(props) {
     }
   };
 
+  //search
+  const shopeRef = firebase.firestore().collection("shops");
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  React.useEffect(() => {
+    shopeRef.onSnapshot(
+        (querySnapshot) => {
+          const newStock = [];
+          querySnapshot.forEach((doc) => {
+            const shop = doc.data();
+            shop.id = doc.id;
+            newStock.push(shop);
+          });
+          setFilteredDataSource(newStock),
+          setMasterDataSource(newStock);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }, []);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.name
+          ? item.name.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
   return (
     <Provider>
       <View style={styles.container}>
@@ -78,6 +126,13 @@ function AppSelectShop(props) {
         <View style={styles.header}>
           <Text style={styles.text}>ඉන්වොයිසය නිකුත් කරන සාප්පුව තෝරන්න</Text>
         </View>
+        <Searchbar
+        style={{marginTop:"1%",marginBottom:"5%",borderRadius: 10,marginLeft:"6%",marginRight:"6%"}}
+        onChangeText={(text) => searchFilterFunction(text)}
+        onClear={(text) => searchFilterFunction('')}
+        placeholder="සාප්පුව සොයන්න"
+        value={search}
+      />
         <View
           style={[
             styles.footer,
@@ -88,7 +143,7 @@ function AppSelectShop(props) {
         >
           <View>
             <FlatList
-              data={shops}
+              data={filteredDataSource}
               keyExtractor={(shop) => shop.id.toString()}
               renderItem={({ item }) => (
                 <TouchableNativeFeedback

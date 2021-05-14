@@ -17,7 +17,7 @@ import {
   FAB,
   Provider,
 } from "react-native-paper";
-
+import AppRenderIf from "../configs/AppRenderIf";
 import AppColors from "../configs/AppColors";
 import { firebase } from "../configs/Database";
 

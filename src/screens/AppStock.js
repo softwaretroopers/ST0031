@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, StatusBar, FlatList, StyleSheet } from "react-native";
-import { Avatar, Title, Chip, Provider, Caption } from "react-native-paper";
+import { Avatar, Title, Chip, Provider, Caption,Searchbar } from "react-native-paper";
 import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
@@ -26,6 +26,55 @@ function AppStock(props) {
       }
     );
   }, []);
+
+  //search
+  const stockInvoiceRef = firebase.firestore().collection("stockItems");
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [masterDataSource, setMasterDataSource] = useState([]);
+
+  React.useEffect(() => {
+    stockInvoiceRef.onSnapshot(
+        (querySnapshot) => {
+          const newStock = [];
+          querySnapshot.forEach((doc) => {
+            const shop = doc.data();
+            shop.id = doc.id;
+            newStock.push(shop);
+          });
+          setFilteredDataSource(newStock),
+          setMasterDataSource(newStock);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    }, []);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource
+      // Update FilteredDataSource
+      const newData = masterDataSource.filter(function (item) {
+        const itemData = item.itemName
+          ? item.itemName.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(masterDataSource);
+      setSearch(text);
+    }
+  };
+
+
   return (
     <Provider>
       <View style={styles.screen}>
@@ -33,9 +82,16 @@ function AppStock(props) {
           backgroundColor={AppColors.primary}
           barStyle="light-content"
         />
+        <Searchbar
+    style={{marginTop:"2%",marginBottom:"2%",borderRadius: 10,marginLeft:"2%",marginRight:"2%"}}
+    onChangeText={(text) => searchFilterFunction(text)}
+    onClear={(text) => searchFilterFunction('')}
+    placeholder="භාණ්ඩ සොයන්න"
+     value={search}
+      />
 
         <FlatList
-          data={StockItems}
+          data={filteredDataSource}
           keyExtractor={(stock) => stock.id.toString()}
           renderItem={({ item }) => (
             <View>
