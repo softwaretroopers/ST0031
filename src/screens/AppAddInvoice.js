@@ -224,6 +224,11 @@ function AppAddInvoice({ navigation, route }) {
         value={search}
       />
       <DataTable>
+      <DataTable.Header>
+      <DataTable.Title style={{ justifyContent: "center" }}>ඒකක මිල: Rs.</DataTable.Title>
+      <DataTable.Title style={{ justifyContent: "center" }}>ප්‍රමාණය</DataTable.Title>
+      <DataTable.Title style={{ justifyContent: "center" }}>ක්‍රියාව</DataTable.Title>
+    </DataTable.Header>
         <FlatList
           style={{ marginBottom: "53%" }}
           data={filteredDataSource}
@@ -244,21 +249,21 @@ function AppAddInvoice({ navigation, route }) {
                     {AppRenderIf(
                       invoice.category == "a",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
-                        ඒකක මිල: Rs.
+                       
                         {item.unitPriceA}
                       </DataTable.Cell>
                     )}
                     {AppRenderIf(
                       invoice.category == "b",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
-                        ඒකක මිල: Rs.
+                    
                         {item.unitPriceB}
                       </DataTable.Cell>
                     )}
                     {AppRenderIf(
                       invoice.category == "c",
                       <DataTable.Cell style={{ justifyContent: "center" }}>
-                        ඒකක මිල: Rs.
+                       
                         {item.unitPriceC}
                       </DataTable.Cell>
                     )}
@@ -268,7 +273,7 @@ function AppAddInvoice({ navigation, route }) {
                       {AppRenderIf(
                         invoice.category == "a",
                         <TextInput
-                          placeholder={"ප්‍රමාණය: " + item.stock}
+                          placeholder={"" + item.stock}
                           mode="outlined"
                           onChangeText={(text) => {
                             setQuantity(text),
