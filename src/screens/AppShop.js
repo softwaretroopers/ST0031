@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { View, StatusBar, FlatList, StyleSheet } from "react-native";
-import { Avatar, Title, Caption } from "react-native-paper";
+import { Avatar, Title, Caption,Appbar } from "react-native-paper";
 import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
 
-function AppShop(props) {
+function AppShop({navigation,route}) {
+
+  const { area } = route.params;
+
   const [shops, setShops] = useState([]);
 
   const shopRef = firebase.firestore().collection("shops");
 
   useEffect(() => {
-    shopRef.onSnapshot(
+    shopRef.where("route","==",area.name)
+    .onSnapshot(
       (querySnapshot) => {
         const newShops = [];
         querySnapshot.forEach((doc) => {
@@ -30,6 +34,13 @@ function AppShop(props) {
   return (
     <View style={styles.screen}>
       <StatusBar backgroundColor={AppColors.primary} barStyle="light-content" />
+      <Appbar style={{ backgroundColor: AppColors.primary }}>
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content
+            title="වෙළෙඳසැල"
+            subtitle={"තෝරාගත් ප්‍රදේශය :"+area.name}
+          />
+        </Appbar>
       <FlatList
         data={shops}
         keyExtractor={(shop) => shop.id.toString()}

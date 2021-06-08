@@ -13,9 +13,9 @@ import {
   Caption,
   Avatar,
   Provider,
-  Dialog,
   Searchbar,
-  Appbar,
+  Dialog,
+  Portal,
   Paragraph,
   Button,
 } from "react-native-paper";
@@ -23,10 +23,7 @@ import { firebase } from "../configs/Database";
 
 import AppColors from "../configs/AppColors";
 
-function AppSelectShop({navigation,route}) {
-
-  const {area} =route.params;
-
+function AppSelectRoute(props) {
   const [visible, setVisible] = React.useState(false);
 
   const showDialog = () => setVisible(true);
@@ -35,11 +32,10 @@ function AppSelectShop({navigation,route}) {
   const [shops, setShops] = useState([]);
   const invoiceId = Date.now().toString();
 
-  const shopRef = firebase.firestore().collection("shops");
+  const shopRef = firebase.firestore().collection("route");
 
   useEffect(() => {
-    shopRef
-    .onSnapshot(
+    shopRef.onSnapshot(
       (querySnapshot) => {
         const newShops = [];
         querySnapshot.forEach((doc) => {
@@ -73,53 +69,52 @@ function AppSelectShop({navigation,route}) {
     }
   };
 
-  //search
-  const shopeRef = firebase.firestore().collection("shops");
-  const [search, setSearch] = useState('');
-  const [filteredDataSource, setFilteredDataSource] = useState([]);
-  const [masterDataSource, setMasterDataSource] = useState([]);
+    //search
+    const shopeRef = firebase.firestore().collection("route");
+    const [search, setSearch] = useState('');
+    const [filteredDataSource, setFilteredDataSource] = useState([]);
+    const [masterDataSource, setMasterDataSource] = useState([]);
+  
+    React.useEffect(() => {
+      shopeRef.onSnapshot(
+          (querySnapshot) => {
+            const newStock = [];
+            querySnapshot.forEach((doc) => {
+              const shop = doc.data();
+              shop.id = doc.id;
+              newStock.push(shop);
+            });
+            setFilteredDataSource(newStock),
+            setMasterDataSource(newStock);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }, []);
 
-  React.useEffect(() => {
-    shopeRef.where("route","==",area.name)
-    .onSnapshot(
-        (querySnapshot) => {
-          const newStock = [];
-          querySnapshot.forEach((doc) => {
-            const shop = doc.data();
-            shop.id = doc.id;
-            newStock.push(shop);
-          });
-          setFilteredDataSource(newStock),
-          setMasterDataSource(newStock);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }, []);
-
-  const searchFilterFunction = (text) => {
-    // Check if searched text is not blank
-    if (text) {
-      // Inserted text is not blank
-      // Filter the masterDataSource
-      // Update FilteredDataSource
-      const newData = masterDataSource.filter(function (item) {
-        const itemData = item.name
-          ? item.name.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-      setFilteredDataSource(newData);
-      setSearch(text);
-    } else {
-      // Inserted text is blank
-      // Update FilteredDataSource with masterDataSource
-      setFilteredDataSource(masterDataSource);
-      setSearch(text);
-    }
-  };
+    const searchFilterFunction = (text) => {
+      // Check if searched text is not blank
+      if (text) {
+        // Inserted text is not blank
+        // Filter the masterDataSource
+        // Update FilteredDataSource
+        const newData = masterDataSource.filter(function (item) {
+          const itemData = item.name
+            ? item.name.toUpperCase()
+            : ''.toUpperCase();
+          const textData = text.toUpperCase();
+          return itemData.indexOf(textData) > -1;
+        });
+        setFilteredDataSource(newData);
+        setSearch(text);
+      } else {
+        // Inserted text is blank
+        // Update FilteredDataSource with masterDataSource
+        setFilteredDataSource(masterDataSource);
+        setSearch(text);
+      }
+    };
 
   return (
     <Provider>
@@ -128,57 +123,49 @@ function AppSelectShop({navigation,route}) {
           backgroundColor={AppColors.primary}
           barStyle="light-content"
         />
-        <Appbar style={{ backgroundColor: AppColors.primary }}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content
-            title="වෙළෙඳසැල් තෝරන්න"
-            subtitle={"තෝරාගත් ප්‍රදේශය :"+area.name}
-          />
-        </Appbar>
         <View style={styles.header}>
-          <Text style={styles.text}>ඉන්වොයිසය නිකුත් කරන වෙළෙඳසැල තෝරන්න</Text>
+          <Text style={styles.text}>ඉන්වොයිසය නිකුත් කරන ප්‍රදේශය තෝරන්න</Text>
         </View>
         <Searchbar
         style={{marginTop:"1%",marginBottom:"5%",borderRadius: 10,marginLeft:"6%",marginRight:"6%"}}
         onChangeText={(text) => searchFilterFunction(text)}
         onClear={(text) => searchFilterFunction('')}
-        placeholder="වෙළෙඳසැල් සොයන්න"
+        placeholder="ප්‍රදේශය සොයන්න"
         value={search}
       />
-        <View
+         <View
           style={[
             styles.footer,
             {
               backgroundColor: AppColors.background,
             },
           ]}
-        >
+        > 
           <View>
             <FlatList
               data={filteredDataSource}
               keyExtractor={(shop) => shop.id.toString()}
               renderItem={({ item }) => (
+              
                 <TouchableNativeFeedback
                   onPress={(values) => {
                     createInvoice(),
-                      navigation.navigate("AddInvoiceScreen", {
-                        invoice: {
+                      props.navigation.navigate("AddShopScreen", {
+                        area: {
                           name: item.name,
-                          category: item.category,
-                          docID: invoiceId,
                         },
                       });
                   }}
                 >
                   <View style={styles.card}>
-                    <Avatar.Icon size={40} icon="store" />
+                    <Avatar.Icon size={40} icon="road-variant" />
                     <Title style={styles.title}>{item.name}</Title>
-                    <Caption style={{ textTransform: "uppercase" }}>
-                      මිල කාණ්ඩය: {item.category}
-                    </Caption>
                   </View>
                 </TouchableNativeFeedback>
-              )}
+              
+              )
+            
+            }
             />
           </View>
         </View>
@@ -187,7 +174,7 @@ function AppSelectShop({navigation,route}) {
   );
 }
 
-export default AppSelectShop;
+export default AppSelectRoute;
 
 const { height } = Dimensions.get("screen");
 const height_logo = height * 0.15;

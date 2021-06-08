@@ -18,11 +18,16 @@ import AppSelectShop from "./src/screens/AppSelectShop";
 import AppAddInvoice from "./src/screens/AppAddInvoice";
 import AppAddReturn from "./src/screens/AppAddReturn";
 import AppInvoice from "./src/screens/AppInvoice";
+import AppSelectRoute from "./src/screens/AppSelectRoute";
+import AppRoute from "./src/screens/AppRoute";
+import AppCategory from "./src/screens/AppCategory";
 
 const MainStack = createStackNavigator();
 const HomeStack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 const InvoiceStack = createStackNavigator();
+const shopStack = createStackNavigator();
+const StockStack = createStackNavigator();
 
 export default function App() {
   const [loading, setLoading] = React.useState(true);
@@ -139,8 +144,8 @@ const TabNav = ({ App }) => (
     />
 
     <Tab.Screen
-      name="StockScreen"
-      component={AppStock}
+      name="StockScreens"
+      component={StockScreens}
       options={{
         title: "තොග",
         tabBarIcon: () => (
@@ -153,10 +158,10 @@ const TabNav = ({ App }) => (
       }}
     />
     <Tab.Screen
-      name="ShopScreen"
-      component={AppShop}
+      name="ShopScreens"
+      component={ShopScreens}
       options={{
-        title: "සාප්පු",
+        title: "ප්‍රදේශ",
         tabBarIcon: () => (
           <MaterialCommunityIcons
             name="store"
@@ -194,11 +199,19 @@ const AddInvoiceScreens = (props) => (
       },
     }}
   >
+     <InvoiceStack.Screen
+      name="AddRouteScreen"
+      component={AppSelectRoute}
+      options={{
+        title: "ප්‍රදේශය තෝරන්න",
+      }}
+    />
     <InvoiceStack.Screen
       name="AddShopScreen"
       component={AppSelectShop}
       options={{
         title: "සාප්පුවක් තෝරන්න",
+        headerShown:false,
       }}
     />
     <InvoiceStack.Screen
@@ -218,4 +231,62 @@ const AddInvoiceScreens = (props) => (
       }}
     />
   </InvoiceStack.Navigator>
+);
+
+const ShopScreens = (props) => (
+  <shopStack.Navigator
+    screenOptions={{
+      headerStyle: { backgroundColor: AppColors.primary },
+      headerTintColor: AppColors.background,
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    }}
+  >
+    <shopStack.Screen
+      name="RouteScreen"
+      component={AppRoute}
+      options={{
+        title: "ප්‍රදේශය තෝරන්න",
+        headerShown:false,
+      }}
+    />
+    <shopStack.Screen
+      name="ShopScreen"
+      component={AppShop}
+      options={{
+        title: "සාප්පුවක් තෝරන්න",
+        headerShown: false,
+      }}
+    />
+  </shopStack.Navigator>
+);
+
+const StockScreens = (props) => (
+  <StockStack.Navigator
+    screenOptions={{
+      headerStyle: { backgroundColor: AppColors.primary },
+      headerTintColor: AppColors.background,
+      headerTitleStyle: {
+        fontWeight: "bold",
+      },
+    }}
+  >
+    <StockStack.Screen
+      name="CategoryScreen"
+      component={AppCategory}
+      options={{
+        title: "සාප්පුවක් තෝරන්න",
+        headerShown: false,
+      }}
+    />
+    <StockStack.Screen
+      name="StockScreen"
+      component={AppStock}
+      options={{
+        title: "ප්‍රදේශය තෝරන්න",
+        headerShown:false,
+      }}
+    />
+  </StockStack.Navigator>
 );

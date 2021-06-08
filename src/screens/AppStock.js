@@ -5,7 +5,10 @@ import { firebase } from "../configs/Database";
 import AppColors from "../configs/AppColors";
 import AppRenderIf from "../configs/AppRenderIf";
 
-function AppStock(props) {
+function AppStock({navigation,route}) {
+
+  const {category}=route.params;
+
   const [StockItems, setStockItems] = useState([]);
 
   const stockRef = firebase.firestore().collection("stockItems");
@@ -34,7 +37,7 @@ function AppStock(props) {
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   React.useEffect(() => {
-    stockInvoiceRef.onSnapshot(
+    stockInvoiceRef.where("category","==",category.name).onSnapshot(
         (querySnapshot) => {
           const newStock = [];
           querySnapshot.forEach((doc) => {
