@@ -161,12 +161,15 @@ function AppSelectShop({navigation,route}) {
                 <TouchableNativeFeedback
                   onPress={(values) => {
                     createInvoice(),
-                      navigation.navigate("AddInvoiceScreen", {
+                      navigation.navigate("AddInvoiceCtgScreen", {
                         invoice: {
                           name: item.name,
                           category: item.category,
                           docID: invoiceId,
                         },
+                        // stockcategory:{
+                        //   name:""
+                        // }
                       });
                   }}
                 >

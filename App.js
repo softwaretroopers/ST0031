@@ -21,6 +21,7 @@ import AppInvoice from "./src/screens/AppInvoice";
 import AppSelectRoute from "./src/screens/AppSelectRoute";
 import AppRoute from "./src/screens/AppRoute";
 import AppCategory from "./src/screens/AppCategory";
+import AppAddInvoiceCtg from "./src/screens/AppAddInvoiceCtg"
 
 const MainStack = createStackNavigator();
 const HomeStack = createStackNavigator();
@@ -217,6 +218,14 @@ const AddInvoiceScreens = (props) => (
     <InvoiceStack.Screen
       name="AddInvoiceScreen"
       component={AppAddInvoice}
+      options={{
+        title: "නව ඉන්වොයිස",
+        headerShown: false,
+      }}
+    />
+      <InvoiceStack.Screen
+      name="AddInvoiceCtgScreen"
+      component={AppAddInvoiceCtg}
       options={{
         title: "නව ඉන්වොයිස",
         headerShown: false,

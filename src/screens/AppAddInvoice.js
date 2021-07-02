@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, FlatList, StyleSheet, Dimensions } from "react-native";
 import {
   Button,
   DataTable,
@@ -23,6 +23,8 @@ function AppAddInvoice({ navigation, route }) {
   const onDismissSnackBar = () => setVisibleSnack(false);
 
   const { invoice } = route.params;
+
+  const ctg = invoice.name;
 
   const [StockItems, setStockItems] = React.useState([]);
 
@@ -53,6 +55,7 @@ function AppAddInvoice({ navigation, route }) {
       unitPriceB: unitPriceB,
       unitPriceC: unitPriceC,
       stockPrice: stockPrice,
+      category: ctg,
     };
     stockRef
       .doc(itemID)
@@ -106,27 +109,26 @@ function AppAddInvoice({ navigation, route }) {
 
   //search
   const stockInvoiceRef = firebase.firestore().collection("stockItems");
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
 
   React.useEffect(() => {
-    stockInvoiceRef.onSnapshot(
-        (querySnapshot) => {
-          const newStock = [];
-          querySnapshot.forEach((doc) => {
-            const shop = doc.data();
-            shop.id = doc.id;
-            newStock.push(shop);
-          });
-          setFilteredDataSource(newStock),
-          setMasterDataSource(newStock);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }, []);
+    stockInvoiceRef.where("category", "==", ctg).onSnapshot(
+      (querySnapshot) => {
+        const newStock = [];
+        querySnapshot.forEach((doc) => {
+          const shop = doc.data();
+          shop.id = doc.id;
+          newStock.push(shop);
+        });
+        setFilteredDataSource(newStock), setMasterDataSource(newStock);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }, []);
 
   const searchFilterFunction = (text) => {
     // Check if searched text is not blank
@@ -137,7 +139,7 @@ function AppAddInvoice({ navigation, route }) {
       const newData = masterDataSource.filter(function (item) {
         const itemData = item.itemName
           ? item.itemName.toUpperCase()
-          : ''.toUpperCase();
+          : "".toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -151,12 +153,17 @@ function AppAddInvoice({ navigation, route }) {
     }
   };
 
+  var { height } = Dimensions.get("window");
+
   return (
     <View>
       <Appbar>
         <Appbar.BackAction onPress={(values) => navigation.goBack()} />
-        <Appbar.Content title="නව ඉන්වොයිස" subtitle={invoice.name} />
-        <Appbar.Action
+        <Appbar.Content
+          title="නව ඉන්වොයිස"
+          subtitle={"තෝරාගත් කාණ්ඩය :" + invoice.name}
+        />
+        {/* <Appbar.Action
           onPress={(values) =>
             navigation.navigate("AddReturnScreen", {
               shop: {
@@ -167,7 +174,7 @@ function AppAddInvoice({ navigation, route }) {
             })
           }
           icon="arrow-collapse-right"
-        />
+        /> */}
       </Appbar>
       <View
         style={{
@@ -180,14 +187,10 @@ function AppAddInvoice({ navigation, route }) {
       >
         <View
           style={{
-            flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Title style={{ marginHorizontal: "2%", fontSize: 12 }}>
-            ගෙවීමේ ක්‍රමය
-          </Title>
           <Snackbar
             duration={500}
             visible={visibleSnack}
@@ -195,17 +198,6 @@ function AppAddInvoice({ navigation, route }) {
           >
             දත්ත එකතු කිරීම සාර්ථකයි
           </Snackbar>
-          <ToggleButton.Row
-            onValueChange={(value) => setValue(value)}
-            value={value}
-          >
-            <ToggleButton icon="cash" value="cash"></ToggleButton>
-            <ToggleButton icon="credit-card" value="card"></ToggleButton>
-            <ToggleButton
-              icon="card-text-outline"
-              value="cheque"
-            ></ToggleButton>
-          </ToggleButton.Row>
         </View>
         <Divider style={{ marginLeft: "2%", width: 1, height: "100%" }} />
         <View
@@ -219,148 +211,157 @@ function AppAddInvoice({ navigation, route }) {
       <Divider />
       <Searchbar
         onChangeText={(text) => searchFilterFunction(text)}
-        onClear={(text) => searchFilterFunction('')}
+        onClear={(text) => searchFilterFunction("")}
         placeholder="භාණ්ඩ සොයන්න"
         value={search}
       />
       <DataTable>
-      <DataTable.Header>
-      <DataTable.Title style={{ justifyContent: "center" }}>ඒකක මිල: Rs.</DataTable.Title>
-      <DataTable.Title style={{ justifyContent: "center" }}>ප්‍රමාණය</DataTable.Title>
-      <DataTable.Title style={{ justifyContent: "center" }}>ක්‍රියාව</DataTable.Title>
-    </DataTable.Header>
-        <FlatList
-          style={{ marginBottom: "53%" }}
-          data={filteredDataSource}
-          keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
-          renderItem={({ item, index }) => (
-            <>
-              {AppRenderIf(
-                0 < item.stock,
-                <>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{ justifyContent: "center" }}>
-                      {item.itemName}
-                    </DataTable.Cell>
-                  </DataTable.Row>
+        <DataTable.Header>
+          <DataTable.Title style={{ justifyContent: "center" }}>
+            ඒකක මිල: Rs.
+          </DataTable.Title>
+          <DataTable.Title style={{ justifyContent: "center" }}>
+            ප්‍රමාණය
+          </DataTable.Title>
+          <DataTable.Title style={{ justifyContent: "center" }}>
+            ක්‍රියාව
+          </DataTable.Title>
+        </DataTable.Header>
 
-                  <DataTable.Row>
-                    {/* <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell> */}
-                    {AppRenderIf(
-                      invoice.category == "a",
+        <View style={{ height: height }}>
+          <FlatList
+            style={{ marginBottom: "53%" }}
+            data={filteredDataSource}
+            keyExtractor={(invoiceItem) => invoiceItem.id.toString()}
+            renderItem={({ item, index }) => (
+              <>
+                {AppRenderIf(
+                  0 < item.stock,
+                  <>
+                    <DataTable.Row>
                       <DataTable.Cell style={{ justifyContent: "center" }}>
-                       
-                        {item.unitPriceA}
+                        {item.itemName}
                       </DataTable.Cell>
-                    )}
-                    {AppRenderIf(
-                      invoice.category == "b",
-                      <DataTable.Cell style={{ justifyContent: "center" }}>
-                    
-                        {item.unitPriceB}
-                      </DataTable.Cell>
-                    )}
-                    {AppRenderIf(
-                      invoice.category == "c",
-                      <DataTable.Cell style={{ justifyContent: "center" }}>
-                       
-                        {item.unitPriceC}
-                      </DataTable.Cell>
-                    )}
-                    <DataTable.Cell
-                      style={{ justifyContent: "center", alignItems: "center" }}
-                    >
+                    </DataTable.Row>
+
+                    <DataTable.Row>
+                      {/* <DataTable.Cell style={{justifyContent:"center"}}>{item.itemName}</DataTable.Cell> */}
                       {AppRenderIf(
                         invoice.category == "a",
-                        <TextInput
-                          placeholder={"" + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceA),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
+                        <DataTable.Cell style={{ justifyContent: "center" }}>
+                          {item.unitPriceA}
+                        </DataTable.Cell>
                       )}
                       {AppRenderIf(
                         invoice.category == "b",
-                        <TextInput
-                          placeholder={"ප්‍රමාණය: " + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceB),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
+                        <DataTable.Cell style={{ justifyContent: "center" }}>
+                          {item.unitPriceB}
+                        </DataTable.Cell>
                       )}
                       {AppRenderIf(
                         invoice.category == "c",
-                        <TextInput
-                          placeholder={"ප්‍රමාණය: " + item.stock}
-                          mode="outlined"
-                          onChangeText={(text) => {
-                            setQuantity(text),
-                              setItemName(item.itemName),
-                              setunitPrice(item.unitPriceC),
-                              setStockPrice(item.stockPrice),
-                              setItemID(item.id),
-                              setItemStock(item.stock),
-                              setUnitPriceA(item.unitPriceA),
-                              setUnitPriceB(item.unitPriceB),
-                              setUnitPriceC(item.unitPriceC);
-                          }}
-                          keyboardType="number-pad"
-                          style={{
-                            backgroundColor: AppColors.background,
-                            height: 25,
-                          }}
-                        ></TextInput>
+                        <DataTable.Cell style={{ justifyContent: "center" }}>
+                          {item.unitPriceC}
+                        </DataTable.Cell>
                       )}
-                    </DataTable.Cell>
-                    <DataTable.Cell style={{ justifyContent: "center" }}>
-                      <Button
-                        mode="contained"
-                        icon="plus-circle"
-                        // color={Colors.red500}
-                        size={20}
-                        onPress={() => {
-                          createInvoice();
-                          onToggleSnackBar();
-                          updateStock();
+                      <DataTable.Cell
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        Add
-                      </Button>
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                </>
-              )}
-            </>
-          )}
-        />
+                        {AppRenderIf(
+                          invoice.category == "a",
+                          <TextInput
+                            placeholder={"" + item.stock}
+                            mode="outlined"
+                            onChangeText={(text) => {
+                              setQuantity(text),
+                                setItemName(item.itemName),
+                                setunitPrice(item.unitPriceA),
+                                setStockPrice(item.stockPrice),
+                                setItemID(item.id),
+                                setItemStock(item.stock),
+                                setUnitPriceA(item.unitPriceA),
+                                setUnitPriceB(item.unitPriceB),
+                                setUnitPriceC(item.unitPriceC);
+                            }}
+                            keyboardType="number-pad"
+                            style={{
+                              backgroundColor: AppColors.background,
+                              height: 25,
+                            }}
+                          ></TextInput>
+                        )}
+                        {AppRenderIf(
+                          invoice.category == "b",
+                          <TextInput
+                            placeholder={"ප්‍රමාණය: " + item.stock}
+                            mode="outlined"
+                            onChangeText={(text) => {
+                              setQuantity(text),
+                                setItemName(item.itemName),
+                                setunitPrice(item.unitPriceB),
+                                setStockPrice(item.stockPrice),
+                                setItemID(item.id),
+                                setItemStock(item.stock),
+                                setUnitPriceA(item.unitPriceA),
+                                setUnitPriceB(item.unitPriceB),
+                                setUnitPriceC(item.unitPriceC);
+                            }}
+                            keyboardType="number-pad"
+                            style={{
+                              backgroundColor: AppColors.background,
+                              height: 25,
+                            }}
+                          ></TextInput>
+                        )}
+                        {AppRenderIf(
+                          invoice.category == "c",
+                          <TextInput
+                            placeholder={"ප්‍රමාණය: " + item.stock}
+                            mode="outlined"
+                            onChangeText={(text) => {
+                              setQuantity(text),
+                                setItemName(item.itemName),
+                                setunitPrice(item.unitPriceC),
+                                setStockPrice(item.stockPrice),
+                                setItemID(item.id),
+                                setItemStock(item.stock),
+                                setUnitPriceA(item.unitPriceA),
+                                setUnitPriceB(item.unitPriceB),
+                                setUnitPriceC(item.unitPriceC);
+                            }}
+                            keyboardType="number-pad"
+                            style={{
+                              backgroundColor: AppColors.background,
+                              height: 25,
+                            }}
+                          ></TextInput>
+                        )}
+                      </DataTable.Cell>
+                      <DataTable.Cell style={{ justifyContent: "center" }}>
+                        <Button
+                          mode="contained"
+                          icon="plus-circle"
+                          // color={Colors.red500}
+                          size={20}
+                          onPress={() => {
+                            createInvoice();
+                            onToggleSnackBar();
+                            updateStock();
+                          }}
+                        >
+                          Add
+                        </Button>
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  </>
+                )}
+              </>
+            )}
+          />
+        </View>
       </DataTable>
     </View>
   );
