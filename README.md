@@ -1,18 +1,17 @@
-<h1 align="center">Hi <img style="margin-bottom:-3px;" src="https://images.squarespace-cdn.com/content/v1/5b5587ed8ab722298af0921a/4d51fa35-1bcb-4385-9be6-03f330e5dad6/ABOUT-US-JOHN-WAVING.gif" width="40">, I'm Kushen De Silva</h1>
-<p align="center"><em>Abandoned Project..<img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30">
-</em></p><br>
+## 💻 Software Troopers
 
-- 🌐 Author's Website - **https://kushen.tech**
-- 📫 How to reach the author - **kushendesilva@gmail.com**
+[![Website](https://img.shields.io/badge/Author-008080?style=for-the-badge&logo=GoogleChrome&logoColor=white)](https://kushen.tech)
+[![Email](https://img.shields.io/badge/Email-008080?style=for-the-badge&logo=Gmail&logoColor=white)](mailto:softwaretroopers@gmail.com)
 
-<h3 align="left">Connect with the Author:</h3>
-<p align="left">
-<a href="https://wa.me/94717827878" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/whatsapp.svg" alt="kushendesilva" height="30" width="40" /></a>
-<a href="https://linkedin.com/in/kushendesilva" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="kushendesilva" height="30" width="40" /></a>
-<a href="https://twitter.com/kushendesilva" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/twitter.svg" alt="kushendesilva" height="30" width="40" /></a>
-<a href="https://fb.com/kushendesilva" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/facebook.svg" alt="kushendesilva" height="30" width="40" /></a>
-<a href="https://instagram.com/kushendesilva" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="kushendesilva" height="30" width="40" /></a>
-</p>
+## 🌐 Author's Socials:
 
-<h3 align="left">Support the Author:</h3>
-<p><a href="https://www.buymeacoffee.com/kushendesilva"> <img align="left" src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" width="210" alt="kushendesilva" /></a><a href="https://ko-fi.com/kushendesilva"> <img align="left" src="https://cdn.ko-fi.com/cdn/kofi3.png?v=3" height="50" width="210" alt="kushendesilva" /></a></p><br><br>
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/94727827878)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/kushendesilva)
+[![Facebook](https://img.shields.io/badge/Facebook-%231877F2?style=for-the-badge&logo=Facebook&logoColor=white)](https://facebook.com/kushendesilva)
+[![Instagram](https://img.shields.io/badge/Instagram-%23E4405F?style=for-the-badge&logo=Instagram&logoColor=white)](https://instagram.com/kushendesilva)
+
+## 💰 You can help the Author by Donating
+
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-000000?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://buymeacoffee.com/kushendesilva) [![Ko-Fi](https://img.shields.io/badge/Ko--fi-000000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/kushendesilva)
+
+<p>&copy; <a href="https://software-troopers.web.app">Software Troopers</a></p>
